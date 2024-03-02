@@ -20,8 +20,12 @@ main:
 	addi  a2, zero, prompt_end - prompt        
 	ecall
 
-    # Read up to 100 characters from the terminal (stdin)
-    call read_from_terminal
+	#  Read up to 100 characters from the terminal (stdin)
+	li a7, __NR_READ
+	li a0, STDIN
+	mv a1, sp
+	addi a2, zero, 100
+	ecall
 
 	# Write the just read characters to the terminal (stdout)
 	addi a2, a0, 0
@@ -35,15 +39,6 @@ main:
 	addi sp, sp, 104
 	ret
 
-read_from_terminal:
-    li a7, __NR_READ
-    li a0, STDIN
-    mv a1, sp
-    addi a2, zero, 100
-    ecall
-    ret
-
 .data
 prompt:   .ascii  "Enter a message: "
 prompt_end:
-
