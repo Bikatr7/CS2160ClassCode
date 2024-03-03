@@ -12,7 +12,7 @@ main:
     sw ra, 100(sp)
 
     # Call puts to write the prompt
-    la a0, str
+    la a0, prompt
     call puts
 
     # Call gets to read input
@@ -78,5 +78,6 @@ finish_puts:
     ret
 
 .data
-str: .asciz "Enter a message: "
+prompt: .asciz "Enter a message: "
+prompt_end:
 buf: .space 100
