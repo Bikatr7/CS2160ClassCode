@@ -31,6 +31,7 @@ main:
     ret
 
 read_from_terminal:
+    # Read from the terminal (stdin)
     li a7, __NR_READ
     li a0, STDIN
     mv a1, sp
