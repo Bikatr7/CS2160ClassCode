@@ -11,13 +11,13 @@ main:
     addi sp, sp, -4   # Make space on the stack
     sw ra, 0(sp)      # Save ra on the stack
 
-    la a0, prompt     # Load address of prompt message
+    la a0, prompt    
     call puts
 
-    la a0, buf        # Load address of buffer
+    la a0, buf       
     call gets
 
-    la a0, buf        # Load address of buffer
+    la a0, buf     
     call puts
 
     lw ra, 0(sp)      # Restore ra from the stack
@@ -33,13 +33,13 @@ puts:
 
 puts_loop:
     lb a1, 0(t0)      # Load the next byte of the string
-    beqz a1, done_puts # If the byte is 0, end of string
+    beqz a1, done_puts # If byte is 0, end of string
     call putchar
     addi t0, t0, 1    # Move to the next character
     j puts_loop
 
 done_puts:
-    li a1, 10         # Output a newline at the end
+    li a1, 10         # Output newline at the end
     call putchar
     li a0, 0          # return 0 on success
 
@@ -50,7 +50,7 @@ done_puts:
 
 
 gets:
-    addi sp, sp, -4   # Make space on the stack
+    addi sp, sp, -4   # Make space on stack
     sw ra, 0(sp)      # Save ra on the stack
 
     mv t1, a0         # Save the start address of the buffer
@@ -91,6 +91,7 @@ getchar:
     ret
 
 handle_eof_error:
+    addi sp, sp, 4    # Deallocate stack space
     li a0, -1         # Use -1 to indicate EOF/error
     ret
 
