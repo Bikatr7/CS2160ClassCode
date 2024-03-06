@@ -8,51 +8,70 @@
 .globl main
 
 main:
+    addi sp, sp, -4   # Make space on the stack
+    sw ra, 0(sp)      # Save ra on the stack
+
     la a0, prompt     # Load address of prompt message
-
-    call puts      
-
-    la a0, buf        # Load address of buffer
-    call gets      
+    call puts
 
     la a0, buf        # Load address of buffer
-    call puts      
+    call gets
 
+    la a0, buf        # Load address of buffer
+    call puts
+
+    lw ra, 0(sp)      # Restore ra from the stack
+    addi sp, sp, 4    # Return the stack pointer to its original position
     ret
 
+
 puts:
+    addi sp, sp, -4   # Make space on the stack
+    sw ra, 0(sp)      # Save ra on the stack
+
     mv t0, a0         # Save the start address of the string
 
 puts_loop:
     lb a1, 0(t0)      # Load the next byte of the string
     beqz a1, done_puts # If the byte is 0, end of string
-    call putchar     
+    call putchar
     addi t0, t0, 1    # Move to the next character
-    j puts_loop     
+    j puts_loop
 
 done_puts:
     li a1, 10         # Output a newline at the end
     call putchar
     li a0, 0          # return 0 on success
+
+    lw ra, 0(sp)      # Restore ra from the stack
+    addi sp, sp, 4    # Return the stack pointer to its original position
     ret
+
 
 
 gets:
+    addi sp, sp, -4   # Make space on the stack
+    sw ra, 0(sp)      # Save ra on the stack
+
     mv t1, a0         # Save the start address of the buffer
 
 gets_loop:
-    call getchar      
+    call getchar
     li t2, -1         # Load the EOF/error indicator into t2
     beq a0, t2, done_gets # If EOF/error, break out of the loop
-    sb a0, 0(t1)      # Storecharacter in the buffer
+    sb a0, 0(t1)      # Store character in the buffer
     li t2, 10         # Load newline into t2
     beq a0, t2, done_gets # If the character newline, branch to done_gets
     addi t1, t1, 1    # Increment buffer pointer
-    j gets_loop       
+    j gets_loop
 
 done_gets:
     sb zero, 0(t1)    # Null-terminate the string
+
+    lw ra, 0(sp)      # Restore ra from the stack
+    addi sp, sp, 4    # Return the stack pointer to its original position
     ret
+
 
 
 
