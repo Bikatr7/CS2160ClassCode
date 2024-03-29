@@ -89,42 +89,48 @@ done_gets:
     ret
 
 getchar:
-    addi sp, sp, -4
-    li a7, __NR_READ  
-    li a0, STDIN      
-    mv a1, sp         ## Pointer to the stack space
-    li a2, 1          ## Read one character
-    ecall             
-    lb a0, 0(sp)      ## Load the read character
-    addi sp, sp, 4    ## Deallocate stack space
-    
-    blez a0, handle_eof_error  ## If <= 0 , handle as EOF/error
+    addi sp, sp, -4       # Allocate space for the read syscall
+    li a7, __NR_READ      # Syscall number for read
+    li a0, STDIN          # File descriptor 0 (stdin)
+    mv a1, sp             # Pointer to space on the stack to store the read byte
+    li a2, 1              # Read one character
+    ecall                 # Perform the syscall
+    mv t1, a0             # Save the return value of read syscall in t1
+    lb a0, 0(sp)          # Load the read character into a0
+    addi sp, sp, 4        # Clean up the stack
 
-    ## Otherwise, return the character as is
+    li t2, 1              # Load the number 1 into t2
+    bne t1, t2, handle_eof_error # If read did not return 1, handle as EOF/error
+
+    # Otherwise, return the character as is
     ret
 
 handle_eof_error:
-    li a1, -1         ## Use -1 to indicate EOF/error
+    li a0, -1             # Use -1 to indicate EOF/error
     ret
+
+
 
 
 
 putchar:
-    li a7, __NR_WRITE 
-    li a0, STDOUT    
-    addi sp, sp, -4   ## Allocate space on stack
-    sb a1, 0(sp)      ## Store the character stack
-    mv a1, sp         ## Pointer 
-    li a2, 1          ## Write one chara
-    ecall             
-    addi sp, sp, 4    ## Deallocate 
-    mv a0, a1         ## Return the character
+    li a7, __NR_WRITE    # Syscall number for write
+    li a0, STDOUT        # File descriptor 1 (stdout)
+    addi sp, sp, -4      # Allocate space on stack
+    sb a1, 0(sp)         # Store the character on the stack
+    mv a1, sp            # Pointer to the character
+    li a2, 1             # Write one character
+    ecall                # Perform the syscall
+    addi sp, sp, 4       # Clean up the stack
+    mv a0, a1            # Return the character (not strictly necessary here)
     ret
-
-
+    
 .data
 prompt:   .ascii  "Enter a message: "
 prompt_end:
+
+## input should be
+## AAAAAAAAAAAAAAAAAAAAèŸþ¿
 
 .word 0
 sekret_data:
