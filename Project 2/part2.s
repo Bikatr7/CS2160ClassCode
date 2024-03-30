@@ -72,7 +72,7 @@ gets:
 
 gets_loop:
     call getchar
-    li t3, -1         ##Load the EOF/error indicator into t3
+    li t3, -1       
     beq a0, t3, done_gets ## If EOF/error, break out of the loop
     sb a0, 0(s0)      ## Store character in the buffer
     li t3, 10         ## Load newline into t3
@@ -89,47 +89,43 @@ done_gets:
     ret
 
 getchar:
-    addi sp, sp, -4       # Allocate space for the read syscall
-    li a7, __NR_READ      # Syscall number for read
-    li a0, STDIN          # File descriptor 0 (stdin)
-    mv a1, sp             # Pointer to space on the stack to store the read byte
-    li a2, 1              # Read one character
-    ecall                 # Perform the syscall
-    mv t1, a0             # Save the return value of read syscall in t1
-    lb a0, 0(sp)          # Load the read character into a0
-    addi sp, sp, 4        # Clean up the stack
+    addi sp, sp, -4       ## Allocate space for the read syscall
+    li a7, __NR_READ      
+    li a0, STDIN         
+    mv a1, sp             
+    li a2, 1              
+    ecall                 
+    mv t1, a0             ## Save the return value of read syscall in t1
+    lb a0, 0(sp)          ## Load the read character into a0
+    addi sp, sp, 4        ## Clean up  stack
 
-    li t2, 1              # Load the number 1 into t2
-    bne t1, t2, handle_eof_error # If read did not return 1, handle as EOF/error
+    li t2, 1              
+    bne t1, t2, handle_eof_error ## If read did not return 1, handle as EOF/error
 
-    # Otherwise, return the character as is
+    ## Otherwise, return the character as is
     ret
 
 handle_eof_error:
-    li a0, -1             # Use -1 to indicate EOF/error
+    li a0, -1             ## Use -1 to indicate EOF/error
     ret
 
-
-
-
-
 putchar:
-    li a7, __NR_WRITE    # Syscall number for write
-    li a0, STDOUT        # File descriptor 1 (stdout)
-    addi sp, sp, -4      # Allocate space on stack
-    sb a1, 0(sp)         # Store the character on the stack
-    mv a1, sp            # Pointer to the character
-    li a2, 1             # Write one character
-    ecall                # Perform the syscall
-    addi sp, sp, 4       # Clean up the stack
-    mv a0, a1            # Return the character (not strictly necessary here)
+    li a7, __NR_WRITE  
+    li a0, STDOUT       
+    addi sp, sp, -4      ## Allocate stack space
+    sb a1, 0(sp)         ## Store character on the stack
+    mv a1, sp            ## character pointer
+    li a2, 1             ## Write one character
+    ecall                ## sys ccall
+    addi sp, sp, 4       ## Clean up the stack
+    mv a0, a1            
     ret
     
 .data
 prompt:   .ascii  "Enter a message: "
 prompt_end:
 
-## input should be
+## input should be for part 2: but program does not seem to write the Ÿ character properly
 ## AAAAAAAAAAAAAAAAAAAAèŸþ¿
 
 .word 0
