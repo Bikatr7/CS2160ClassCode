@@ -5,6 +5,9 @@
 .equ __NR_WRITE, 64
 .equ __NR_EXIT, 93
 
+## part 2 input: AAAAAAAAAAAAAAAAAAAAèþÿ¿
+## part 3 input: AAAAAAAAAAAAAAAAAAAAD2€€
+
 .text
 main:
 	# main() prolog
@@ -48,7 +51,7 @@ puts:
     mv t0, a0         # Savestart address of string
 
 puts_loop:
-    lb a1, 0(t0)      ## Load the next byte of the string
+    lbu a1, 0(t0)      ## Load the next byte of the string
     beqz a1, done_puts ## If byte is 0, end of string
     call putchar
     addi t0, t0, 1    ## Move to the next character
@@ -96,7 +99,7 @@ getchar:
     li a2, 1              
     ecall                 
     mv t1, a0             ## Save the return value of read syscall in t1
-    lb a0, 0(sp)          ## Load the read character into a0
+    lbu a0, 0(sp)          ## Load the read character into a0
     addi sp, sp, 4        ## Clean up  stack
 
     li t2, 1              
@@ -124,9 +127,6 @@ putchar:
 .data
 prompt:   .ascii  "Enter a message: "
 prompt_end:
-
-## input should be for part 2: but program does not seem to write the Ÿ character properly
-## AAAAAAAAAAAAAAAAAAAAèŸþ¿
 
 .word 0
 sekret_data:
