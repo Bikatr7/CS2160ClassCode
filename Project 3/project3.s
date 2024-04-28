@@ -5,13 +5,17 @@
 .equ __NR_WRITE, 64
 .equ __NR_EXIT, 93
 
-## part 2 input AAAAAAAAAAAAAAAAAAAAD2€€ (to test canary works)
+## part 2 input AAAAAAAAAAAAAAAAAAAA|2€€ (to test canary works)
+## part 3 input (AAAAAAAAAAAAAAAAAAAAAAAA€€€C|2€€) (to break canary)
 
+## AAAAAAAAAAAAAAAAAAAAAAAA (buffer)
+## €€€C (canary)
+## |2€€ (address string)
 
-.text
 main:
+    li t2,sekret_fn
 	## Extend the stack to include canary space cause reasons
-	addi sp, sp, -32
+	addi sp, sp, -28
 	sw ra, 28(sp)
 	la t0, canary_value
 	lw t1, 0(t0)
@@ -34,7 +38,7 @@ main:
 	bne t1, t2, exit_failure
 
 	lw ra, 28(sp)
-	addi sp, sp, 32
+	addi sp, sp, 29
 	ret
 
 exit_failure:
@@ -142,5 +146,6 @@ prompt_end:
 sekret_data:
 .word 0x73564753, 0x67384762, 0x79393256, 0x3D514762, 0x0000000A
 
-canary_value: .ascii "CnRyS3cr"
-canary_end:
+.word 0
+canary_value: 
+.word 0x43000000
