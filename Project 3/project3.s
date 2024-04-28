@@ -5,8 +5,6 @@
 .equ __NR_WRITE, 64
 .equ __NR_EXIT, 93
 
-## part 2 input: AAAAAAAAAAAAAAAAAAAAèþÿ¿
-## part 3 input: AAAAAAAAAAAAAAAAAAAAD2€€
 
 .text
 main:
@@ -39,10 +37,6 @@ sekret_fn:
 	lw ra, 0(sp)
 	addi sp, sp, 4
 	ret
-
-##############################################################
-# Add your implementation of puts() and gets() below here
-##############################################################
 
 puts:
     addi sp, sp, -4   ## Make space on stack
