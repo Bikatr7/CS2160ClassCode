@@ -5,16 +5,17 @@
 .equ __NR_WRITE, 64
 .equ __NR_EXIT, 93
 
-## part 2 input AAAAAAAAAAAAAAAAAAAA|2€€ (to test canary works)
-## part 3 input (AAAAAAAAAAAAAAAAAAAAAAAA€€€C|2€€) (to break canary)
+## part 2 input AAAAAAAAAAAAAAAAAAAAAAAA|2€€ 
+## part 3 input AAAAAAAAAAAAAAAAAAAAAAAA2dEC|2€€ 
 
 ## AAAAAAAAAAAAAAAAAAAAAAAA (buffer)
-## €€€C (canary)
+## 2dEC (canary)
 ## |2€€ (address string)
 
 main:
-    li t2,sekret_fn
-	## Extend the stack to include canary space cause reasons
+    ## li s9, sekret_fn ## Load the address of the secret function into s9 to view
+	
+    ## Extend the stack to include canary space cause reasons
 	addi sp, sp, -28
 	sw ra, 28(sp)
 	la t0, canary_value
@@ -38,7 +39,7 @@ main:
 	bne t1, t2, exit_failure
 
 	lw ra, 28(sp)
-	addi sp, sp, 29
+	addi sp, sp, 28
 	ret
 
 exit_failure:
@@ -148,4 +149,4 @@ sekret_data:
 
 .word 0
 canary_value: 
-.word 0x43000000
+.word 0x43456432

@@ -5,14 +5,22 @@
 .equ __NR_WRITE, 64
 .equ __NR_EXIT, 93
 
-## part 2 input: AAAAAAAAAAAAAAAAAAAAèþÿ¿
-## part 3 input: AAAAAAAAAAAAAAAAAAAAD2€€
+## part 2 input AAAAAAAAAAAAAAAAAAAAAAAA|2€€ 
+## part 3 input AAAAAAAAAAAAAAAAAAAAAAAA2dEC|2€€ 
 
-.text
+## AAAAAAAAAAAAAAAAAAAAAAAA (buffer)
+## 2dEC (canary)
+## |2€€ (address string)
+
 main:
-	# main() prolog
-	addi sp, sp, -24
-	sw ra, 20(sp)
+    ## li s9, sekret_fn ## Load the address of the secret function into s9 to view
+	
+    ## Extend the stack to include canary space cause reasons
+	addi sp, sp, -28
+	sw ra, 28(sp)
+	la t0, canary_value
+	lw t1, 0(t0)
+	sw t1, 24(sp)
 
 	# main() body
 	la a0, prompt
@@ -24,10 +32,21 @@ main:
 	mv a0, sp
 	call puts
 
-	# main() epilog
-	lw ra, 20(sp)
-	addi sp, sp, 24
+	## Check the canary before returning 
+	la t0, canary_value
+	lw t1, 0(t0)
+	lw t2, 24(sp)
+	bne t1, t2, exit_failure
+
+	lw ra, 28(sp)
+	addi sp, sp, 28
 	ret
+
+exit_failure:
+	li a7, __NR_EXIT
+	li a0, 1
+	ecall
+
 
 .space 12288
 
@@ -39,10 +58,6 @@ sekret_fn:
 	lw ra, 0(sp)
 	addi sp, sp, 4
 	ret
-
-##############################################################
-# Add your implementation of puts() and gets() below here
-##############################################################
 
 puts:
     addi sp, sp, -4   ## Make space on stack
@@ -131,3 +146,7 @@ prompt_end:
 .word 0
 sekret_data:
 .word 0x73564753, 0x67384762, 0x79393256, 0x3D514762, 0x0000000A
+
+.word 0
+canary_value: 
+.word 0x43456432
