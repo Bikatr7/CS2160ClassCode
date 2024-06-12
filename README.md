@@ -3,10 +3,10 @@
 ## Class Information
 - **Class Name:** CS 2160
 - **University:** University of Colorado, Colorado Springs
-- **Semester:** Spring 2023
+- **Semester:** Spring 2024
 
 ## Description
-This repository contains the coursework for CS 2160 at the University of Colorado Colorado Springs, developed during the Spring 2023 semester. With all code implemented in RISC-V Assembly.
+This repository contains the coursework for CS 2160 at the University of Colorado Colorado Springs, developed during the Spring 2024 semester. With all code implemented in RISC-V Assembly.
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.
